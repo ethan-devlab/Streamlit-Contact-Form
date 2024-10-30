@@ -1,0 +1,2 @@
+streamlit==1.37.1
+email_validator==2.2.0
