@@ -11,16 +11,17 @@ from datetime import datetime as dt
 import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
-from email_validator import validate_email, EmailNotValidError
+from email_validator import validate_email, EmailNotValidError, EmailUndeliverableError
 
 sender, password = st.secrets["Email"]["email"], st.secrets["Email"]["password"]
 receiver = sender
 port = 587
+date = "2024-11-14"
 
 if "disable" not in st.session_state or st.session_state.disable is False:
     st.session_state.disable = True
 
-if dt.now().strftime("%Y-%m-%d") >= "2024-11-14":
+if dt.now().strftime("%Y-%m-%d") >= date:
     st.session_state.disable = False
 else:
     st.session_state.disable = True
@@ -50,11 +51,11 @@ Here is the original content:
 
 def check(email):
     try:
-        valid = validate_email(email)
+        valid = validate_email(email, check_deliverability=True)
         email = valid.normalized
         return True
-    except EmailNotValidError as e:
-        st.error(e)
+    except (EmailNotValidError or EmailUndeliverableError) as e:
+        form.error(e)
         return False
 
 def send():
@@ -67,7 +68,7 @@ def send():
         msg['From'] = sender
         msg['To'] = receiver
         msg['Subject'] = subject
-        server.sendmail(sender, receiver, msg.as_string())
+        # server.sendmail(sender, receiver, msg.as_string())
         server.quit()
         form.success("Your submit has been recorded!")
 

@@ -155,8 +155,6 @@ dmypy.json
 cython_debug/
 
 # Streamlit
-. .streamlit
-. .streamlit/
 secrets.toml
 
 # PyCharm
