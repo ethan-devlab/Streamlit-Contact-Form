@@ -2,9 +2,9 @@
 
 """
 Author: Ethan Chan / JC Work
-Version: 1.0
+Version: 1.1
 First Release: 2024-10-30
-Last Update: 2024-10-30 14:24:13
+Last Update: 2024-11-09 16:15:58
 """
 
 from datetime import datetime as dt
@@ -16,7 +16,7 @@ from email_validator import validate_email, EmailNotValidError, EmailUndeliverab
 sender, password = st.secrets["Email"]["email"], st.secrets["Email"]["password"]
 receiver = sender
 port = 587
-date = "2024-11-14"
+date = st.secrets["General"]["available_date"]
 
 if "disable" not in st.session_state or st.session_state.disable is False:
     st.session_state.disable = True
@@ -68,7 +68,7 @@ def send():
         msg['From'] = sender
         msg['To'] = receiver
         msg['Subject'] = subject
-        # server.sendmail(sender, receiver, msg.as_string())
+        server.sendmail(sender, receiver, msg.as_string())
         server.quit()
         form.success("Your submit has been recorded!")
 
