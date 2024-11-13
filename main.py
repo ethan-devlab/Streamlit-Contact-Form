@@ -2,9 +2,9 @@
 
 """
 Author: Ethan Chan / JC Work
-Version: 2.0.1
+Version: 2.1.1
 First Release: 2024-10-30
-Last Update: 2024-11-14 00:29:03
+Last Update: 2024-11-14 00:43:34
 """
 
 from datetime import datetime as dt
@@ -34,7 +34,7 @@ st.subheader("We are group 2! If you have any questions, kindly fill in the form
 
 form = st.form("contact_form")
 form.markdown("<p style='font-size: 13pt;color: lightblue'><strong>Privacy Policy</strong>: By filling in the form below, you acknowledge "
-              "and consent to the collection of your personal information. We may collect your name, id and email. "
+              "and consent to the collection of your personal information. We may collect your name, ID and email. "
               "We respect your privacy and are committed to protecting your personal information.</p>",
               unsafe_allow_html=True)
 confirm_box = form.checkbox("***By ticking this box I agree to the privacy policy stated above**")
