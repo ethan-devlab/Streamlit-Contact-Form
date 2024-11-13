@@ -2,28 +2,28 @@
 
 """
 Author: Ethan Chan / JC Work
-Version: 2.0.0
+Version: 2.0.1
 First Release: 2024-10-30
-Last Update: 2024-11-14 00:09:24
+Last Update: 2024-11-14 00:29:03
 """
 
 from datetime import datetime as dt
+import pytz
 import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email_validator import validate_email, EmailNotValidError, EmailUndeliverableError
 
-
 sender, password = st.secrets["Email"]["email"], st.secrets["Email"]["password"]
 receiver = sender
 port = 587
 date = st.secrets["General"]["available_date"]
-
+today = dt.now(pytz.timezone("Asia/Taipei")).strftime("%Y-%m-%d")
 if "disable" not in st.session_state or st.session_state.disable is False:
     st.session_state.disable = True
 
-if dt.now().strftime("%Y-%m-%d") >= date:
+if today >= date:
     st.session_state.disable = False
 else:
     st.session_state.disable = True
@@ -50,7 +50,7 @@ subject = form.text_input("**Subject**")
 message = form.text_area("**Message***")
 copy_checkbox = form.checkbox("**Send me a copy of my responses**")
 submit = form.form_submit_button("Submit", disabled=st.session_state.disable, icon=":material/send:")
-if dt.now().strftime("%Y-%m-%d") < date:
+if today < date:
     form.markdown("<p style='font-size: 12pt'>Submit button will be available on 2024-11-14.</p>",
                   unsafe_allow_html=True)
 

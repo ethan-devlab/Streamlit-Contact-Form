@@ -1,1 +1,2 @@
 email_validator==2.2.0
+pytz==2024.2
