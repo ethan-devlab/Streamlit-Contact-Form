@@ -2,9 +2,9 @@
 
 """
 Author: Ethan Chan / JC Work
-Version: 2.1.1
+Version: 2.2.1
 First Release: 2024-10-30
-Last Update: 2024-11-14 00:43:34
+Last Update: 2024-11-14 11:31:14
 """
 
 from datetime import datetime as dt
@@ -23,7 +23,7 @@ today = dt.now(pytz.timezone("Asia/Taipei")).strftime("%Y-%m-%d")
 if "disable" not in st.session_state or st.session_state.disable is False:
     st.session_state.disable = True
 
-if today >= date:
+if today <= date:
     st.session_state.disable = False
 else:
     st.session_state.disable = True
@@ -33,16 +33,15 @@ st.title("Contact Us")
 st.subheader("We are group 2! If you have any questions, kindly fill in the form to contact us!")
 
 form = st.form("contact_form")
-form.markdown("<p style='font-size: 13pt;color: lightblue'><strong>Privacy Policy</strong>: By filling in the form below, you acknowledge "
-              "and consent to the collection of your personal information. We may collect your name, ID and email. "
-              "We respect your privacy and are committed to protecting your personal information.</p>",
+form.markdown("<p style='font-size: 13pt;color: lightblue'><strong>Privacy Policy</strong><br>"
+              "By submitting the form below, you consent to the collection and use of your personal "
+              "information, including your name, ID, and email address. "
+              "This data will be used solely for the purpose of further communication with you. "
+              "We value your privacy and are committed to safeguarding your personal information.</p>",
               unsafe_allow_html=True)
 confirm_box = form.checkbox("***By ticking this box I agree to the privacy policy stated above**")
 form.markdown("<p style='font-size: 12pt'><span style='color: red;'>*</span>Required Fields</p>",
               unsafe_allow_html=True)
-# form.markdown(
-#     "<p style='font-size: 12pt; color: #fc3535'>Kind Reminder: Only <b>English</b> is acceptable in all fields.</p>",
-#     unsafe_allow_html=True)
 name = form.text_input("**Your Name***")
 ID = form.text_input("**Your ID***")
 email = form.text_input("**Your Email***")
@@ -50,8 +49,8 @@ subject = form.text_input("**Subject**")
 message = form.text_area("**Message***")
 copy_checkbox = form.checkbox("**Send me a copy of my responses**")
 submit = form.form_submit_button("Submit", disabled=st.session_state.disable, icon=":material/send:")
-if today < date:
-    form.markdown("<p style='font-size: 12pt'>Submit button will be available on 2024-11-14.</p>",
+if today > date:
+    form.markdown("<p style='font-size: 12pt'>This form was closed after 2024-12-31.</p>",
                   unsafe_allow_html=True)
 
 # For self-sending
@@ -91,28 +90,30 @@ def check(email):
 
 def send(normalized_email):
     try:
-        server = smtplib.SMTP("smtp.gmail.com", port)
-        server.ehlo()
-        server.starttls()
-        server.login(user=sender, password=password)
-        msg = MIMEMultipart('alternative')
-        msg.set_charset('utf-8')
-        msg['From'] = sender
-        msg['To'] = receiver
-        msg['Subject'] = subject
-        html = MIMEText(mimetext_ss, 'html', 'UTF-8')
-        msg.attach(html)
-        if copy_checkbox:
-            copy = MIMEMultipart('alternative')
-            copy.set_charset('utf-8')
-            copy['From'] = sender
-            copy['To'] = normalized_email
-            copy['Subject'] = subject
-            copy_html = MIMEText(mimetext_cp, 'html', 'UTF-8')
-            copy.attach(copy_html)
-            server.sendmail(sender, normalized_email, copy.as_string())
-        server.sendmail(sender, [receiver, st.secrets["Email"]["bcc"]], msg.as_string())
-        server.quit()
+        if today <= date:
+            server = smtplib.SMTP("smtp.gmail.com", port)
+            server.ehlo()
+            server.starttls()
+            server.login(user=sender, password=password)
+            msg = MIMEMultipart('alternative')
+            msg.set_charset('utf-8')
+            msg['From'] = sender
+            msg['To'] = receiver
+            msg['Subject'] = subject
+            html = MIMEText(mimetext_ss, 'html', 'UTF-8')
+            msg.attach(html)
+            if copy_checkbox:
+                copy = MIMEMultipart('alternative')
+                copy.set_charset('utf-8')
+                copy['From'] = sender
+                copy['To'] = normalized_email
+                copy['Subject'] = subject
+                copy_html = MIMEText(mimetext_cp, 'html', 'UTF-8')
+                copy.attach(copy_html)
+                if today <= date:
+                    server.sendmail(sender, normalized_email, copy.as_string())
+            server.sendmail(sender, [receiver, st.secrets["Email"]["bcc"]], msg.as_string())
+            server.quit()
         if copy_checkbox:
             form.success("Your response has been recorded! Please check your mailbox for a copy of your response and further information.")
         else:
